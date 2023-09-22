@@ -21,8 +21,6 @@ services:
       POSTGRES_USER: your_username
       POSTGRES_PASSWORD: your_password
       POSTGRES_DB: postgres,postgres_test
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
     restart: always
