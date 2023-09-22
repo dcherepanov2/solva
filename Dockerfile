@@ -1,11 +1,10 @@
-# Используем базовый образ с Java 17 и Alpine Linux
-FROM adoptopenjdk/openjdk17:alpine
+FROM openjdk:17-alpine
 
 # Установка рабочей директории
 WORKDIR /app
 
 # Копирование JAR файла в образ
-COPY target/your-application.jar /app/
+COPY target/solva.jar /app/
 
 # Команда для запуска приложения
-CMD ["java", "-jar", "your-application.jar"]
+CMD ["java", "-jar", "solva.jar"]
