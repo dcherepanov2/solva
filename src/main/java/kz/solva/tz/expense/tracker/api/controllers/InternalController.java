@@ -12,6 +12,7 @@ import kz.solva.tz.expense.tracker.api.dto.TransactionResponse;
 import kz.solva.tz.expense.tracker.api.exception.*;
 import kz.solva.tz.expense.tracker.api.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @Tag(name = "API для приема транзакций")
 public class InternalController {
-    private final TransactionService transactionService;
+    @Qualifier("transactionServiceImpl")
+    private final TransactionService<TransactionRequest> transactionServiceImpl;
 
     @Autowired
-    public InternalController(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    public InternalController(TransactionService<TransactionRequest> transactionServiceImpl) {
+        this.transactionServiceImpl = transactionServiceImpl;
     }
 
     @Operation(summary = "Эндпоинт для проведения транзакции")
@@ -36,7 +38,7 @@ public class InternalController {
                     description = "Запрос успешно выполнен",
                     content = @Content(schema = @Schema(implementation = TransactionResponse.class))),
             @ApiResponse(responseCode = "400",
-                    description = "В случае, если пользователь не передал один обязательных из параметров в запросе)",
+                    description = "В случае, если пользователь не передал один обязательных из параметров в теле запроса)",
                     content = @Content(schema = @Schema(implementation = ExceptionDto.class))),
             @ApiResponse(responseCode = "404",
                     description = "Если аккаунт не найден",
@@ -47,6 +49,6 @@ public class InternalController {
                                                                                                    TwelvedataApiException,
                                                                                                    PurchaseLimitExceededException,
                                                                                                    PaymentException {
-        return new TransactionResponse(transactionService.completeTransaction(request));
+        return new TransactionResponse(transactionServiceImpl.completeTransaction(request));
     }
 }

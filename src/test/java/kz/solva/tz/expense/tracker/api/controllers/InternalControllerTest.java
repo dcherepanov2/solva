@@ -1,7 +1,6 @@
 package kz.solva.tz.expense.tracker.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kz.solva.tz.expense.tracker.api.data.ExpenseLimitResponse;
 import kz.solva.tz.expense.tracker.api.dto.LimitReqest;
 import kz.solva.tz.expense.tracker.api.dto.TransactionRequest;
 import kz.solva.tz.expense.tracker.api.dto.TransactionResponse;
@@ -41,7 +40,6 @@ class InternalControllerTest {
     private final ObjectMapper objectMapper;
     private final ClientController clientController;
     private final String apiUri = "/internal";
-
     private final String completeTransaction = "/complete-transaction";
 
     @Autowired

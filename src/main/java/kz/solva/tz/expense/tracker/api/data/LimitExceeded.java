@@ -18,7 +18,7 @@ public class LimitExceeded {
     private CurrencyExchangeRateEntity exchangeRateAtLimit;
 
     @Column(name = "limit_exceeded")
-    private Boolean limitExceeded;
+    private Boolean flag;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_limit_id")

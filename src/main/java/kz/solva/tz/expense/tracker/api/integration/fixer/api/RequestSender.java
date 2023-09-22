@@ -1,5 +1,7 @@
 package kz.solva.tz.expense.tracker.api.integration.fixer.api;
 
-public interface RequestSender<T> {
-    T get(Request request);
+import kz.solva.tz.expense.tracker.api.integration.fixer.api.dto.QuoteResponse;
+
+public interface RequestSender {
+    QuoteResponse getQuote(Request request);
 }

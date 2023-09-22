@@ -147,9 +147,9 @@ class ClientControllerTest {
         params.append("&");
         params.append("page=").append(page);
         params.append("&");
-        params.append("size=").append(20);
+        params.append("size=").append(size);
         ResultActions perform = mockMvc.perform(MockMvcRequestBuilders.get(apiUri + getTransactionsUri + params))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(result);
 
         String responseBody = perform.andReturn().getResponse().getContentAsString();
 

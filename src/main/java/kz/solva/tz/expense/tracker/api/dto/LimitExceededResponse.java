@@ -15,6 +15,6 @@ public class LimitExceededResponse {
 
     public LimitExceededResponse(LimitExceeded limitExceeded){
         this.exchangeRateAtLimit = new CurrencyExchangeRateResponse(limitExceeded.getExchangeRateAtLimit());
-        this.flag = limitExceeded.getLimitExceeded();
+        this.flag = limitExceeded.getFlag();
     }
 }

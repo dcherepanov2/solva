@@ -11,17 +11,16 @@ import jakarta.validation.Valid;
 import kz.solva.tz.expense.tracker.api.data.CurrencyExchangeRateEntity;
 import kz.solva.tz.expense.tracker.api.data.ExpenseLimit;
 import kz.solva.tz.expense.tracker.api.data.ExpenseLimitResponse;
-import kz.solva.tz.expense.tracker.api.dto.CurrencyExchangeRateResponse;
-import kz.solva.tz.expense.tracker.api.dto.LimitReqest;
-import kz.solva.tz.expense.tracker.api.dto.TransactionParams;
-import kz.solva.tz.expense.tracker.api.dto.TransactionResponse;
+import kz.solva.tz.expense.tracker.api.dto.*;
 import kz.solva.tz.expense.tracker.api.dto.enums.Currency;
+import kz.solva.tz.expense.tracker.api.exception.AccountNotFoundException;
 import kz.solva.tz.expense.tracker.api.exception.ExceptionDto;
 import kz.solva.tz.expense.tracker.api.exception.TwelvedataApiException;
 import kz.solva.tz.expense.tracker.api.service.CurrencyRateTrackerService;
 import kz.solva.tz.expense.tracker.api.service.LimitService;
 import kz.solva.tz.expense.tracker.api.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,15 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO: пересмотреть файлик с мок данными, сделать так, чтобы накатывалось только на базу с тестами
-//TODO: попробовать переписать метод completeTransaction
-//TODO: сделать docker-compose файлик
-//TODO: залить на GIT
 
 
 @Tag(name = "API для внешних запросов от клиента")
@@ -47,18 +41,22 @@ import java.util.stream.Collectors;
 @Validated
 @RequestMapping("/api/v1/client")
 public class ClientController {
-    private final CurrencyRateTrackerService currencyRateTrackerService;
+    private final CurrencyRateTrackerService currencyRateTrackerServiceImpl;
 
     @Value("${client.transaction.max.size}")
     private Integer maxPageSize;
-    private final LimitService limitService;
-    private final TransactionService transactionService;
+
+    @Qualifier("limitServiceImpl")
+    private final LimitService limitServiceImpl;
+
+    @Qualifier("transactionServiceImpl")
+    private final TransactionService<TransactionRequest> transactionServiceImpl;
 
     @Autowired
-    public ClientController(CurrencyRateTrackerService currencyRateTrackerService, LimitService limitService, TransactionService transactionService) {
-        this.currencyRateTrackerService = currencyRateTrackerService;
-        this.limitService = limitService;
-        this.transactionService = transactionService;
+    public ClientController(CurrencyRateTrackerService currencyRateTrackerServiceImpl, LimitService limitServiceImpl, TransactionService<TransactionRequest> transactionServiceImpl) {
+        this.currencyRateTrackerServiceImpl = currencyRateTrackerServiceImpl;
+        this.limitServiceImpl = limitServiceImpl;
+        this.transactionServiceImpl = transactionServiceImpl;
     }
 
     @Operation(summary = "Эндпоинт для получения информации о курсе валютных пар")
@@ -80,7 +78,7 @@ public class ClientController {
                                                       @RequestParam("to") Currency toCurrency,
                                                       @Parameter(description = "Дата конвертации", required = true)
                                                       @RequestParam("date") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate date) throws TwelvedataApiException {
-        CurrencyExchangeRateEntity currencyExchangeEntity = currencyRateTrackerService.getCurrencyExchangeRate(baseCurrency, toCurrency, date);
+        CurrencyExchangeRateEntity currencyExchangeEntity = currencyRateTrackerServiceImpl.getCurrencyExchangeRate(baseCurrency, toCurrency, date);
         return new CurrencyExchangeRateResponse(currencyExchangeEntity);
     }
 
@@ -98,7 +96,7 @@ public class ClientController {
     })
     @PostMapping("/set-new-limit")
     public ExpenseLimitResponse setNewLimit(@RequestBody @Valid LimitReqest request) throws AccountNotFoundException {
-        ExpenseLimit expenseLimit = limitService.setNewLimit(request);
+        ExpenseLimit expenseLimit = limitServiceImpl.setNewLimit(request);
         return new ExpenseLimitResponse(expenseLimit);
     }
 
@@ -133,7 +131,7 @@ public class ClientController {
         TransactionParams transactionParams = new TransactionParams();
         transactionParams.setLimitExceeded(limitExceed);
         transactionParams.setAccountFrom(accountFrom);
-        return transactionService.getTransactions(transactionParams, pageable).stream()
+        return transactionServiceImpl.getTransactions(transactionParams, pageable).stream()
                 .map(TransactionResponse::new)
                 .collect(Collectors.toList());
     }

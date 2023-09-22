@@ -20,7 +20,7 @@ public class TransactionParams {
 
         if (limitExceeded != null) {
             Join<Transaction, LimitExceeded> limitExceededJoin = root.join("limitExceeded", JoinType.INNER);
-            predicates.add(builder.equal(limitExceededJoin.get("limitExceeded"), limitExceeded));
+            predicates.add(builder.equal(limitExceededJoin.get("flag"), limitExceeded));
         }
 
         if (accountFrom != null) {
