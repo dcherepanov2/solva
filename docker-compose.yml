@@ -7,9 +7,9 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: postgres, postgres_test
+      POSTGRES_DB: postgres,postgres_test
     ports:
-      - "5433:5433"
+      - "5432:5432"
     command: ["postgres", "-c", "log_statement=all"]
 
   setup:
@@ -20,10 +20,12 @@ services:
     environment:
       POSTGRES_USER: your_username
       POSTGRES_PASSWORD: your_password
-      POSTGRES_DB: postgres, postgres_test
+      POSTGRES_DB: postgres,postgres_test
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
   app:
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,4 +34,6 @@ services:
       - setup
     volumes:
       - ./target/solva.jar:/app/solva.jar
-    command: [ "java", "-jar", "solva.jar" ]
+    environment:
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/postgres?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true
+    command: ["java", "-jar", "solva.jar"]
