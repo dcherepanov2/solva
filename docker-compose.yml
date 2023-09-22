@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
     container_name: solva
     depends_on:
-      - postgres
+      - setup
     volumes:
       - ./target/solva.jar:/app/solva.jar
     command: [ "java", "-jar", "solva.jar" ]
