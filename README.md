@@ -13,7 +13,7 @@
 2) spring.datasource.username* - поставьте свой логин от постгреса, важно, чтобы у пользователя был полный доступ
 3) spring.datasource.password* - поставьте свой пароль от ранее созданного пользователя с полными правами
 4) twelvedata.api.access.key** - замените значение этой настройки на свой ключ API ключ tweldata
-5) Далее нужно собрать сервис c помощью команды: mvn clean package
+5) Далее нужно собрать сервис c помощью команды:  mvn clean package -D skipTests
 6) Далее нужно запустить сервис с помощью команды: java -jar tz.expense.tracker.api-0.0.1-SNAPSHOT.jar
    
 Для работы тестов:
