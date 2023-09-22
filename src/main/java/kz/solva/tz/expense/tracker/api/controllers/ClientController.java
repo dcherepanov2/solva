@@ -34,6 +34,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//TODO: сделать docker-compose файлик
+
+//TODO: проверить все ошибки на правильный путь расположения
 
 
 @Tag(name = "API для внешних запросов от клиента")

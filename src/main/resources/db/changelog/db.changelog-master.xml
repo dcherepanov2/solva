@@ -17,6 +17,7 @@
     <include file="/v.1.0/transactions.sql" relativeToChangelogFile="true"/>
     <include file="/v.1.0/currency_conversion.sql" relativeToChangelogFile="true"/>
     <include file="/v.1.0/init.sql" relativeToChangelogFile="true"/>
+    <include file="/v.1.0/test/db.changelog-master-test.xml" relativeToChangelogFile="true"/>
 
 
 </databaseChangeLog>
