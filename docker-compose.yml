@@ -5,8 +5,8 @@ services:
     image: postgres
     container_name: postgres
     environment:
-      POSTGRES_USER: your_username
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
       POSTGRES_DB: postgres, postgres_test
     ports:
       - "5433:5433"
@@ -27,9 +27,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: your-application
+    container_name: solva
     depends_on:
       - postgres
     volumes:
-      - ./target/your-application.jar:/app/your-application.jar
+      - ./target/solva.jar:/app/solva.jar
     command: [ "java", "-jar", "solva.jar" ]
